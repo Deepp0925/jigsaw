@@ -1,6 +1,6 @@
 # Download Dataset (Important)
 
-In order for python code to work you need the datasets which can be downloaded from [here](https://ungprod.sharepoint.com/:u:/s/NSFResearchProjectAModularMultilayerFrameworkforReal-Time355/ERG9Cw0WY6pCrfWkGKj2WlEBaEbHVeBD2HTCwKsmpWhSZw?e=faSn8T) and unzip at the root of the project
+In order for python code to work you need the datasets which can be downloaded from [here](https://ungprod.sharepoint.com/:u:/s/NSFResearchProjectAModularMultilayerFrameworkforReal-Time355/ERG9Cw0WY6pCrfWkGKj2WlEBaEbHVeBD2HTCwKsmpWhSZw?e=h6tFYP) and unzip at the root of the project
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/jigsawhsi-a-network-for-hyperspectral-image/hyperspectral-image-classification-on-pavia)](https://paperswithcode.com/sota/hyperspectral-image-classification-on-pavia?p=jigsawhsi-a-network-for-hyperspectral-image)
 
