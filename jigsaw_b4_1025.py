@@ -414,38 +414,32 @@ ytrain = np_utils.to_categorical(ytrain)
 ytrain.shape
 
 input_shape =  (window_size, window_size, num_channels)
-start_training_time_a = time.time()
 model = clone_model(build_jigsawHSI(internal_size = filter_size,
                       num_classes = output_units,
-                      verbose=0,
+                      verbose=1,
                       dimension_filters=hsi_filters, # Was None,
                       image_dim = input_shape))
-
-training_time_a = time.time() - start_training_time_a
 
 model.summary()
 plot_model(model)
 plot_model(model, to_file=architecture_img)
 
-start_training_time_b = time.time()
 # Parallelize if gpus > 1
 if (max_gpus>1):
     model = multi_gpu_model(model, gpus=max_gpus)
 # Compile model
 model.compile(loss='categorical_crossentropy', optimizer=FuncOptimizer, metrics=['accuracy'])
 
-
 # Saves the best model, based on accuracy
-checkpoint = ModelCheckpoint(best_model, monitor='accuracy', verbose=0, save_best_only=True, mode='auto')
+checkpoint = ModelCheckpoint(best_model, monitor='accuracy', verbose=1, save_best_only=True, mode='auto')
 callbacks_list = [checkpoint]
 
 # If no early stopping desired, skip this cell
 early_stop = EarlyStopping( monitor = 'loss',
                            min_delta=0.001,
                            mode='auto',
-                           verbose=0, patience=max_patience)
+                           verbose=1, patience=max_patience)
 callbacks_list = [checkpoint, early_stop]
-training_time_b = time.time() - start_training_time_b
 
 # Summarize configuration
 config_txt  = f'Configuration for dataset [{dataset}]:\n\n'
@@ -468,11 +462,8 @@ config_txt += f'GPU Maximum   : {max_gpus}\n'
 print(config_txt)
 
 # Fit the model keeping the history
-start_training_time_c = time.time()
+start_training_time = time.time()
 history = model.fit(x=Xtrain, y=ytrain, batch_size=batch_size, epochs=1, callbacks=callbacks_list)
-training_time_c = time.time() - start_training_time_c
-training_time = training_time_a + training_time_b + training_time_c
-print('Training time: ' + str(training_time))
 
 # Saves, but does not display, the history charts
 fig = plt.figure(figsize=(7,7)) 
@@ -497,7 +488,7 @@ plt.xlabel('Epochs')
 plt.legend(['Training','Validation']) 
 plt.savefig(acc_curve) 
 plt.close(fig)
-# TODO
+
 # Displays history of training
 # loss and accuracy by epoch, side by side
 
@@ -526,13 +517,11 @@ Xtest.shape
 Ytest = np_utils.to_categorical(ytest)
 Ytest.shape
 
-# Start testing time
-start_testing_time = time.time()
 Y_pred_test = model.predict(Xtest)
 y_pred_test = np.argmax(Y_pred_test, axis=1)
-testing_time = time.time() - start_testing_time
-print('Testing time: ', testing_time)
 classification = classification_report(np.argmax(Ytest, axis=1), y_pred_test)
+training_time = time.time() - start_training_time
+print('Training time: {training_time}')
 print(y_pred_test.shape) 
 print(classification)
 
@@ -569,10 +558,16 @@ def get_targets(name):
 
 
 print(', '.join(get_targets(dataset[0:2].upper())))
+
+testing_time = 0
 def reports (model, X_test, y_test, name, y_pred = None):
+    start_testing_time = time.time()
+
     if (y_pred is None):
         Y_pred = model.predict(X_test)
         y_pred = np.argmax(Y_pred, axis=1)
+        testing_time = time.time() - start_testing_time
+        print('Testing time: ', testing_time)
     #end = time.time()
     #print(end - start)
     target_names = get_targets(name[0:2].upper())
@@ -588,10 +583,10 @@ def reports (model, X_test, y_test, name, y_pred = None):
     
     return classification, confusion, Test_Loss, Test_accuracy, oa*100, each_acc*100, aa*100, kappa*100, target_names
 
-(classification, confusion, Test_loss, Test_accuracy, 
- oa, each_acc, aa, kappa, target_names) = reports(model, Xtest, Ytest, dataset[0:2], y_pred=y_pred_test)
 # (classification, confusion, Test_loss, Test_accuracy, 
-#  oa, each_acc, aa, kappa, target_names) = reports(model, Xtest, Ytest, dataset[0:2], y_pred=None)
+#  oa, each_acc, aa, kappa, target_names) = reports(model, Xtest, Ytest, dataset[0:2], y_pred=y_pred_test)
+(classification, confusion, Test_loss, Test_accuracy, 
+ oa, each_acc, aa, kappa, target_names) = reports(model, Xtest, Ytest, dataset[0:2], y_pred=None)
 
 target_performance = 'Accuracy by target:\n'
 for (a, b) in zip(target_names, each_acc):

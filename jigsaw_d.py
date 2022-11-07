@@ -1,6 +1,5 @@
 import os
 import sys
-import random
 # Use this before loading tensorflow
 #os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' # Block INFO messages
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' # Block INFO and WARNING messages
@@ -10,8 +9,8 @@ os.environ["AUTOGRAPH_VERBOSITY"] = "0"
 import tensorflow as tf
 tf.get_logger().setLevel("WARNING")
 
+import random
 import numpy as np
-import time
 
 if sys.argv[1] is None:
     print("No argument for dataset provided - name must be the same as found in config.ini")
@@ -43,7 +42,7 @@ max_gpus = len(tf.config.list_physical_devices('GPU'))
 """
 Reset all random seeds
 """
-r = reset_seeds(random.randint(0, 600))
+r = reset_seeds(345)
 del r
 
 from sklearn.model_selection import train_test_split
@@ -296,6 +295,8 @@ def readData(dataset, data_path='./data'):
         'DF': ('Fusion2018.mat', 'data', 'Fusion2018_gt.mat', 'A'),
     }
     (X_1, X_2, y_1, y_2) = data_dict.get(dataset[0:2].upper())
+    # print(sio.loadmat(os.path.join(data_path, X_1)))
+    # print(sio.loadmat(os.path.join(data_path, y_1)))
     X = sio.loadmat(os.path.join(data_path, X_1))[X_2]
     y = sio.loadmat(os.path.join(data_path, y_1))[y_2]
     
@@ -414,38 +415,32 @@ ytrain = np_utils.to_categorical(ytrain)
 ytrain.shape
 
 input_shape =  (window_size, window_size, num_channels)
-start_training_time_a = time.time()
 model = clone_model(build_jigsawHSI(internal_size = filter_size,
                       num_classes = output_units,
-                      verbose=0,
+                      verbose=1,
                       dimension_filters=hsi_filters, # Was None,
                       image_dim = input_shape))
-
-training_time_a = time.time() - start_training_time_a
 
 model.summary()
 plot_model(model)
 plot_model(model, to_file=architecture_img)
 
-start_training_time_b = time.time()
 # Parallelize if gpus > 1
 if (max_gpus>1):
     model = multi_gpu_model(model, gpus=max_gpus)
 # Compile model
 model.compile(loss='categorical_crossentropy', optimizer=FuncOptimizer, metrics=['accuracy'])
 
-
 # Saves the best model, based on accuracy
-checkpoint = ModelCheckpoint(best_model, monitor='accuracy', verbose=0, save_best_only=True, mode='auto')
+checkpoint = ModelCheckpoint(best_model, monitor='accuracy', verbose=1, save_best_only=True, mode='auto')
 callbacks_list = [checkpoint]
 
 # If no early stopping desired, skip this cell
 early_stop = EarlyStopping( monitor = 'loss',
                            min_delta=0.001,
                            mode='auto',
-                           verbose=0, patience=max_patience)
+                           verbose=1, patience=max_patience)
 callbacks_list = [checkpoint, early_stop]
-training_time_b = time.time() - start_training_time_b
 
 # Summarize configuration
 config_txt  = f'Configuration for dataset [{dataset}]:\n\n'
@@ -468,11 +463,7 @@ config_txt += f'GPU Maximum   : {max_gpus}\n'
 print(config_txt)
 
 # Fit the model keeping the history
-start_training_time_c = time.time()
 history = model.fit(x=Xtrain, y=ytrain, batch_size=batch_size, epochs=1, callbacks=callbacks_list)
-training_time_c = time.time() - start_training_time_c
-training_time = training_time_a + training_time_b + training_time_c
-print('Training time: ' + str(training_time))
 
 # Saves, but does not display, the history charts
 fig = plt.figure(figsize=(7,7)) 
@@ -497,7 +488,7 @@ plt.xlabel('Epochs')
 plt.legend(['Training','Validation']) 
 plt.savefig(acc_curve) 
 plt.close(fig)
-# TODO
+
 # Displays history of training
 # loss and accuracy by epoch, side by side
 
@@ -526,14 +517,11 @@ Xtest.shape
 Ytest = np_utils.to_categorical(ytest)
 Ytest.shape
 
-# Start testing time
-start_testing_time = time.time()
 Y_pred_test = model.predict(Xtest)
 y_pred_test = np.argmax(Y_pred_test, axis=1)
-testing_time = time.time() - start_testing_time
-print('Testing time: ', testing_time)
-classification = classification_report(np.argmax(Ytest, axis=1), y_pred_test)
+
 print(y_pred_test.shape) 
+classification = classification_report(np.argmax(Ytest, axis=1), y_pred_test)
 print(classification)
 
 def AA_andEachClassAccuracy(confusion_matrix):
@@ -560,7 +548,7 @@ def get_targets(name):
         'KS': ['Scrub','Willow swamp','Cabbage palm hammock','Cabbage palm/oak hammock','Slash pine','Oak/broadleaf hammock','Hardwood swamp',
                'Graminoid marsh','Spartina marsh','Cattail marsh','Salt marsh','Mud flats','Wate'],
         'PC': ['Water','Trees','Asphalt','Self-Blocking Bricks','Bitumen','Tiles','Shadows','Meadows','Bare Soil'],       
-        'DF': ['Healthy grass', 'Stressed grass', 'Artificial turf', 'Evergreen trees', 'Deciduous trees', 'Bare Earth', 'Water', 
+        'DF': ['Unclassified','Healthy grass', 'Stressed grass', 'Artificial turf', 'Evergreen trees', 'Deciduous trees', 'Bare Earth', 'Water', 
                'Residential buildings',  'Non-residential buildings', 'Roads', 'Sidewalks', 'Crosswalks', 'Major thoroughfares','Highways', 'Railways',
                'Paved parking lots', 'Unpaved parking lots', 'Cars', 'Trains','Stadium seats']
     }
@@ -569,7 +557,9 @@ def get_targets(name):
 
 
 print(', '.join(get_targets(dataset[0:2].upper())))
+
 def reports (model, X_test, y_test, name, y_pred = None):
+    #start = time.time()
     if (y_pred is None):
         Y_pred = model.predict(X_test)
         y_pred = np.argmax(Y_pred, axis=1)
@@ -590,16 +580,11 @@ def reports (model, X_test, y_test, name, y_pred = None):
 
 (classification, confusion, Test_loss, Test_accuracy, 
  oa, each_acc, aa, kappa, target_names) = reports(model, Xtest, Ytest, dataset[0:2], y_pred=y_pred_test)
-# (classification, confusion, Test_loss, Test_accuracy, 
-#  oa, each_acc, aa, kappa, target_names) = reports(model, Xtest, Ytest, dataset[0:2], y_pred=None)
 
 target_performance = 'Accuracy by target:\n'
 for (a, b) in zip(target_names, each_acc):
     target_performance += f'{b:8.4f} : {a}\n'
 print(target_performance)
-
-total_time = training_time + testing_time
-print('Total time: ', total_time)
 
 import seaborn as sns
 cf_matrix = np.asarray(confusion)

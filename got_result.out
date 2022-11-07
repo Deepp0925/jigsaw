@@ -1,0 +1,175 @@
+512
+Model: "model"
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+input_1 (InputLayer)            [(None, 27, 27, 15)] 0                                            
+__________________________________________________________________________________________________
+spectral_filter (Conv2D)        (None, 27, 27, 512)  8192        input_1[0][0]                    
+__________________________________________________________________________________________________
+conv2d_1 (Conv2D)               (None, 27, 27, 96)   49248       spectral_filter[0][0]            
+__________________________________________________________________________________________________
+conv2d_3 (Conv2D)               (None, 27, 27, 16)   8208        spectral_filter[0][0]            
+__________________________________________________________________________________________________
+conv2d_5 (Conv2D)               (None, 27, 27, 16)   8208        spectral_filter[0][0]            
+__________________________________________________________________________________________________
+conv2d_7 (Conv2D)               (None, 27, 27, 16)   8208        spectral_filter[0][0]            
+__________________________________________________________________________________________________
+max_pooling2d (MaxPooling2D)    (None, 27, 27, 512)  0           spectral_filter[0][0]            
+__________________________________________________________________________________________________
+conv2d (Conv2D)                 (None, 27, 27, 256)  131328      spectral_filter[0][0]            
+__________________________________________________________________________________________________
+conv2d_2 (Conv2D)               (None, 27, 27, 128)  110720      conv2d_1[0][0]                   
+__________________________________________________________________________________________________
+conv2d_4 (Conv2D)               (None, 27, 27, 128)  51328       conv2d_3[0][0]                   
+__________________________________________________________________________________________________
+conv2d_6 (Conv2D)               (None, 27, 27, 128)  100480      conv2d_5[0][0]                   
+__________________________________________________________________________________________________
+conv2d_8 (Conv2D)               (None, 27, 27, 64)   83008       conv2d_7[0][0]                   
+__________________________________________________________________________________________________
+conv2d_9 (Conv2D)               (None, 27, 27, 32)   16416       max_pooling2d[0][0]              
+__________________________________________________________________________________________________
+flatten_1 (Flatten)             (None, 10935)        0           input_1[0][0]                    
+__________________________________________________________________________________________________
+concatenate (Concatenate)       (None, 27, 27, 736)  0           conv2d[0][0]                     
+                                                                 conv2d_2[0][0]                   
+                                                                 conv2d_4[0][0]                   
+                                                                 conv2d_6[0][0]                   
+                                                                 conv2d_8[0][0]                   
+                                                                 conv2d_9[0][0]                   
+__________________________________________________________________________________________________
+dense_1 (Dense)                 (None, 16)           174976      flatten_1[0][0]                  
+__________________________________________________________________________________________________
+avg_pooling (AveragePooling2D)  (None, 25, 25, 736)  0           concatenate[0][0]                
+__________________________________________________________________________________________________
+dropout_1 (Dropout)             (None, 16)           0           dense_1[0][0]                    
+__________________________________________________________________________________________________
+flatten (Flatten)               (None, 460000)       0           avg_pooling[0][0]                
+__________________________________________________________________________________________________
+dense_2 (Dense)                 (None, 16)           272         dropout_1[0][0]                  
+__________________________________________________________________________________________________
+dense (Dense)                   (None, 16)           7360016     flatten[0][0]                    
+__________________________________________________________________________________________________
+dropout_2 (Dropout)             (None, 16)           0           dense_2[0][0]                    
+__________________________________________________________________________________________________
+dropout (Dropout)               (None, 16)           0           dense[0][0]                      
+__________________________________________________________________________________________________
+concatenate_1 (Concatenate)     (None, 32)           0           dropout_2[0][0]                  
+                                                                 dropout[0][0]                    
+__________________________________________________________________________________________________
+dense_3 (Dense)                 (None, 32)           1056        concatenate_1[0][0]              
+__________________________________________________________________________________________________
+dropout_3 (Dropout)             (None, 32)           0           dense_3[0][0]                    
+__________________________________________________________________________________________________
+dense_4 (Dense)                 (None, 14)           462         dropout_3[0][0]                  
+__________________________________________________________________________________________________
+prob (Activation)               (None, 14)           0           dense_4[0][0]                    
+==================================================================================================
+Total params: 8,112,126
+Trainable params: 8,112,126
+Non-trainable params: 0
+__________________________________________________________________________________________________
+Traceback (most recent call last):
+  File "jigsaw.py", line 427, in <module>
+    plot_model(model)
+  File "/home/dpate2771/.conda/envs/con_jigsaw_env/lib/python3.8/site-packages/tensorflow/python/keras/utils/vis_utils.py", line 292, in plot_model
+    dot.write(to_file, format=extension)
+  File "/home/dpate2771/.conda/envs/con_jigsaw_env/lib/python3.8/site-packages/pydot.py", line 1830, in write
+    f.write(s)
+OSError: [Errno 122] Disk quota exceeded
+512
+Model: "model"
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+input_1 (InputLayer)            [(None, 27, 27, 15)] 0                                            
+__________________________________________________________________________________________________
+spectral_filter (Conv2D)        (None, 27, 27, 512)  8192        input_1[0][0]                    
+__________________________________________________________________________________________________
+conv2d_1 (Conv2D)               (None, 27, 27, 96)   49248       spectral_filter[0][0]            
+__________________________________________________________________________________________________
+conv2d_3 (Conv2D)               (None, 27, 27, 16)   8208        spectral_filter[0][0]            
+__________________________________________________________________________________________________
+conv2d_5 (Conv2D)               (None, 27, 27, 16)   8208        spectral_filter[0][0]            
+__________________________________________________________________________________________________
+conv2d_7 (Conv2D)               (None, 27, 27, 16)   8208        spectral_filter[0][0]            
+__________________________________________________________________________________________________
+max_pooling2d (MaxPooling2D)    (None, 27, 27, 512)  0           spectral_filter[0][0]            
+__________________________________________________________________________________________________
+conv2d (Conv2D)                 (None, 27, 27, 256)  131328      spectral_filter[0][0]            
+__________________________________________________________________________________________________
+conv2d_2 (Conv2D)               (None, 27, 27, 128)  110720      conv2d_1[0][0]                   
+__________________________________________________________________________________________________
+conv2d_4 (Conv2D)               (None, 27, 27, 128)  51328       conv2d_3[0][0]                   
+__________________________________________________________________________________________________
+conv2d_6 (Conv2D)               (None, 27, 27, 128)  100480      conv2d_5[0][0]                   
+__________________________________________________________________________________________________
+conv2d_8 (Conv2D)               (None, 27, 27, 64)   83008       conv2d_7[0][0]                   
+__________________________________________________________________________________________________
+conv2d_9 (Conv2D)               (None, 27, 27, 32)   16416       max_pooling2d[0][0]              
+__________________________________________________________________________________________________
+flatten_1 (Flatten)             (None, 10935)        0           input_1[0][0]                    
+__________________________________________________________________________________________________
+concatenate (Concatenate)       (None, 27, 27, 736)  0           conv2d[0][0]                     
+                                                                 conv2d_2[0][0]                   
+                                                                 conv2d_4[0][0]                   
+                                                                 conv2d_6[0][0]                   
+                                                                 conv2d_8[0][0]                   
+                                                                 conv2d_9[0][0]                   
+__________________________________________________________________________________________________
+dense_1 (Dense)                 (None, 16)           174976      flatten_1[0][0]                  
+__________________________________________________________________________________________________
+avg_pooling (AveragePooling2D)  (None, 25, 25, 736)  0           concatenate[0][0]                
+__________________________________________________________________________________________________
+dropout_1 (Dropout)             (None, 16)           0           dense_1[0][0]                    
+__________________________________________________________________________________________________
+flatten (Flatten)               (None, 460000)       0           avg_pooling[0][0]                
+__________________________________________________________________________________________________
+dense_2 (Dense)                 (None, 16)           272         dropout_1[0][0]                  
+__________________________________________________________________________________________________
+dense (Dense)                   (None, 16)           7360016     flatten[0][0]                    
+__________________________________________________________________________________________________
+dropout_2 (Dropout)             (None, 16)           0           dense_2[0][0]                    
+__________________________________________________________________________________________________
+dropout (Dropout)               (None, 16)           0           dense[0][0]                      
+__________________________________________________________________________________________________
+concatenate_1 (Concatenate)     (None, 32)           0           dropout_2[0][0]                  
+                                                                 dropout[0][0]                    
+__________________________________________________________________________________________________
+dense_3 (Dense)                 (None, 32)           1056        concatenate_1[0][0]              
+__________________________________________________________________________________________________
+dropout_3 (Dropout)             (None, 32)           0           dense_3[0][0]                    
+__________________________________________________________________________________________________
+dense_4 (Dense)                 (None, 14)           462         dropout_3[0][0]                  
+__________________________________________________________________________________________________
+prob (Activation)               (None, 14)           0           dense_4[0][0]                    
+==================================================================================================
+Total params: 8,112,126
+Trainable params: 8,112,126
+Non-trainable params: 0
+__________________________________________________________________________________________________
+Traceback (most recent call last):
+  File "jigsaw.py", line 427, in <module>
+    plot_model(model)
+  File "/home/dpate2771/.conda/envs/con_jigsaw_env/lib/python3.8/site-packages/tensorflow/python/keras/utils/vis_utils.py", line 292, in plot_model
+    dot.write(to_file, format=extension)
+  File "/home/dpate2771/.conda/envs/con_jigsaw_env/lib/python3.8/site-packages/pydot.py", line 1830, in write
+    f.write(s)
+OSError: [Errno 122] Disk quota exceeded
+srun: error: exp-3-58: task 1: Exited with exit code 1
+srun: error: exp-3-58: task 5: Exited with exit code 1
+2022-11-05 20:03:07.665425: F ./tensorflow/core/kernels/random_op_gpu.h:232] Non-OK-status: GpuLaunchKernel(FillPhiloxRandomKernelLaunch<Distribution>, num_blocks, block_size, 0, d.stream(), gen, data, size, dist) status: Internal: out of memory
+2022-11-05 20:03:07.669400: F ./tensorflow/core/kernels/random_op_gpu.h:232] Non-OK-status: GpuLaunchKernel(FillPhiloxRandomKernelLaunch<Distribution>, num_blocks, block_size, 0, d.stream(), gen, data, size, dist) status: Internal: out of memory
+2022-11-05 20:03:10.104913: F tensorflow/stream_executor/lib/statusor.cc:34] Attempting to fetch value instead of handling error Internal: failed initializing StreamExecutor for CUDA device ordinal 0: Internal: failed call to cuDevicePrimaryCtxRetain: CUDA_ERROR_OUT_OF_MEMORY: out of memory; total memory reported: 34089926656
+2022-11-05 20:03:10.172707: F tensorflow/stream_executor/lib/statusor.cc:34] Attempting to fetch value instead of handling error Internal: failed initializing StreamExecutor for CUDA device ordinal 0: Internal: failed call to cuDevicePrimaryCtxRetain: CUDA_ERROR_OUT_OF_MEMORY: out of memory; total memory reported: 34089926656
+2022-11-05 20:03:10.797969: F tensorflow/stream_executor/lib/statusor.cc:34] Attempting to fetch value instead of handling error Internal: failed initializing StreamExecutor for CUDA device ordinal 0: Internal: failed call to cuDevicePrimaryCtxRetain: CUDA_ERROR_OUT_OF_MEMORY: out of memory; total memory reported: 34089926656
+2022-11-05 20:03:11.498468: F tensorflow/stream_executor/lib/statusor.cc:34] Attempting to fetch value instead of handling error Internal: failed initializing StreamExecutor for CUDA device ordinal 0: Internal: failed call to cuDevicePrimaryCtxRetain: CUDA_ERROR_OUT_OF_MEMORY: out of memory; total memory reported: 34089926656
+2022-11-05 20:03:12.942856: F tensorflow/stream_executor/lib/statusor.cc:34] Attempting to fetch value instead of handling error Internal: failed initializing StreamExecutor for CUDA device ordinal 0: Internal: failed call to cuDevicePrimaryCtxRetain: CUDA_ERROR_OUT_OF_MEMORY: out of memory; total memory reported: 34089926656
+2022-11-05 20:03:14.059026: F tensorflow/stream_executor/lib/statusor.cc:34] Attempting to fetch value instead of handling error Internal: failed initializing StreamExecutor for CUDA device ordinal 0: Internal: failed call to cuDevicePrimaryCtxRetain: CUDA_ERROR_OUT_OF_MEMORY: out of memory; total memory reported: 34089926656
+srun: error: exp-3-58: task 9: Aborted (core dumped)
+srun: error: exp-3-58: task 3: Aborted (core dumped)
+srun: error: exp-3-58: task 2: Aborted (core dumped)
+srun: error: exp-3-58: task 8: Aborted (core dumped)
+srun: error: exp-3-58: task 7: Aborted (core dumped)
+srun: error: exp-3-58: task 4: Aborted (core dumped)
+srun: error: exp-3-58: tasks 0,6: Aborted (core dumped)

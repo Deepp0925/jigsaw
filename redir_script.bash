@@ -1,0 +1,1 @@
+/home/dpate2771/rapids/state_art/JigsawHSI/assign_multi_run.bash
