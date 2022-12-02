@@ -1,10 +1,9 @@
 #!/bin/bash
-#SBATCH --job-name="multi_run_task"
+#SBATCH --job-name="single_run_task"
 #SBATCH --output="testgpu.%j.%N.out"
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=10
-#SBATCH --gpus=2
+#SBATCH --gpus=4
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=96G
 #SBATCH --account=aub101
@@ -12,7 +11,6 @@
 #SBATCH -t 30:00:00
 
 DATASET=$1
-NUM_OF_RUNS=${2:-30}
 PARENT_DIR="all_results"
 
 module purge
@@ -49,22 +47,18 @@ if [ ! -d "data" ]; then
     exit 1;
 fi
 
-for ((i=1; i<=$NUM_OF_RUNS; i++)) do
-    echo "Running run $i"
-
-    # this will be the output folder for this run
-    OUTPUT_DIR="${PARENT_DIR}/${DATASET}/"
-    mkdir -p $OUTPUT_DIR
-    # the output file will be named 'result.txt'
-    OUTPUT_FILE="${OUTPUT_DIR}/${i}.txt"
+echo "Running"
+# this will be the output folder for this run
+OUTPUT_DIR="${PARENT_DIR}/${DATASET}/"
+mkdir -p $OUTPUT_DIR
+# the output file will be named 'result.txt'
+OUTPUT_FILE="${OUTPUT_DIR}/${DATASET}_res.txt"
     
-    # get the process id
-    PID=$$
+# get the process id
+PID=$$
     
-    srun python jigsaw_org.py $DATASET > $OUTPUT_FILE
+srun python jigsaw_orgi.py $DATASET > $OUTPUT_FILE 2>&1
 
-    # remove the core dump file
-    rm -f "core.*"
-done
-
+# remove the core dump file
+rm -f "core.${PID}"
 # rm -f core.*
